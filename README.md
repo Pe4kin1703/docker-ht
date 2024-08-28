@@ -9,9 +9,9 @@ We need to create two Docker images: one for the client and one for the server. 
 ```dockerfile
 FROM alpine:latest
 RUN apk add --no-cache netcat-openbsd
-COPY client.sh /scripts/client.sh
-RUN chmod +x /scripts/client.sh
-WORKDIR /scripts
+COPY client.sh /app/client.sh
+RUN chmod +x /app/client.sh
+WORKDIR /app
 ENTRYPOINT ["sh", "/app/client.sh"]
 CMD ["tail", "-f", "/dev/null"]
 ```
@@ -20,10 +20,10 @@ CMD ["tail", "-f", "/dev/null"]
 ```dockerfile
 FROM alpine:latest
 RUN apk add --no-cache netcat-openbsd
-COPY server.sh /scripts/server.sh
-RUN chmod +x /scripts/server.sh
-WORKDIR /scripts
-CMD ["sh", "/scripts/server.sh"]
+COPY server.sh /app/server.sh
+RUN chmod +x /app/server.sh
+WORKDIR /app
+CMD ["sh", "/app/server.sh"]
 ```
 
 ### Build the Docker Images
@@ -50,13 +50,13 @@ Run the containers in the created network:
 ### Run the Server Container
 
 ```
-docker run -d --name server-container --network docker-ht server-image
+docker run -d --name server-container --network docker-ht --mount type=bind,source=./,target=/app server-image
 ```
 
 ### Run the Client Container
 
 ```
-docker run -d --name client-container --network docker-ht client-image
+docker run -d --name client-container --network docker-ht --mount type=bind,source=./,target=/app client-image
 ```
 
 ## 4. Commands to Verify Containers Connectivity
