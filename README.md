@@ -31,8 +31,11 @@ CMD ["sh", "/app/server.sh"]
 Run the following commands to build the Docker images:
 
 ```
-docker build -t client/client-image .
-docker build -t server/server-image .
+cd client/
+docker build . -t client-image  
+
+cd server/ (from server dir)
+docker build . -t server-image 
 ```
 
 ## 2. How to Create a Network
@@ -50,12 +53,14 @@ Run the containers in the created network:
 ### Run the Server Container
 
 ```
+cd server/ (from the server dir)
 docker run -d --name server-container --network docker-ht --mount type=bind,source=./,target=/app server-image
 ```
 
 ### Run the Client Container
 
 ```
+cd client (from the client dir)
 docker run -d --name client-container --network docker-ht --mount type=bind,source=./,target=/app client-image
 ```
 
